@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" class="has-background-light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Footer note to bibliography item</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  </head>
+  <body >
+  <div class="box m-5">
+
+	  <h3 class="title">FootNote to Bibliography item converter</h3>
+	  <form>
+	  <label class="has-text-white-bis" for="footer">Input:</label>
+	  <input class="input " id="footer" name="footer" type="text">
+		  <br>
+		  <br>
+	  <label class="has-text-white-bis" for="numbers">Number of people:</label>
+		  <div class="select">
+			<select id="numbers" name="numbers">
+
+	  		</select>
+		  </div>
+
+		  <br>
+		  <br>
+
+	  <button class="button is-primary" type="button" onclick="getInput()">convert</button>
+  </form>
+  </div>
+
+
+  <br>
+  <br>
+  <div class="box ml-5 mr-5 mb-5 mt-0" style="display:none" id="bible-item">
+	  <h3 class="has-text-white-bis">Bibliography item:</h3>
+	  <p class="m-5" id="output"></p>
+	  <button class="button is-primary" onclick="copyText()">Copy</button>
+	  <h4 id="copy-feedback" class="help is-success" style="display:none;">Text copied to clipboard</h4>
+  </div>
+
+
+  <script>
+
+
+
+	  const selectElement = document.getElementById('numbers');
+
+	  for (let i=1; i<=10; i++){
+          const option = document.createElement('option');
+          option.value = i;
+          option.textContent = i;
+          selectElement.appendChild(option);
+	  }
+
+
+      function copyText() {
+          const text = document.getElementById('output').innerText;
+          const textArea = document.createElement("textArea");
+          textArea.value = text;
+          document.body.appendChild(textArea);
+
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+
+          const feedback = document. getElementById("copy-feedback");
+          feedback.style.display = "block";
+
+          setTimeout(() => {
+              feedback.style.display = "none";
+          }, 2000);
+
+	  }
+	  function getInput() {
+          const foot_note = document.getElementById('footer').value;
+		  const number_of_people = document.getElementById('numbers').value;
+
+          convertInput(foot_note, number_of_people);
+
+
+	  }
+
+      function convertInput(foot_note, number_of_people) {
+
+          const feedback = document. getElementById("bible-item");
+          feedback.style.display = "block";
+
+		 const split_foot_note = foot_note.split(",").map(item => item + ",");
+         for (let i=0; i < parseInt(number_of_people); i++) {
+             let name = split_foot_note[i].split(' ');
+             name = name.filter(item => item !== "")
+             console.log(name)
+             name = name.slice(1).concat(name[0]);
+             let result = name.join(" ");
+			 if (i + 1 == parseInt(number_of_people)) {
+                 split_foot_note[i] = result + ",";
+			 } else {
+                 split_foot_note[i] = result + ", ";
+			 }
+
+
+		 }
+         let targetIndex = parseInt(number_of_people);
+         let complete_bible = split_foot_note.map((item, index) => {
+             if (index === targetIndex) {
+                 return `<i>${item}</i>`;
+			 }
+             return item;
+		 }).join('');
+
+         //let complete_bible = split_foot_note.join('');
+		console.log(foot_note, number_of_people);
+        console.log(split_foot_note);
+        console.log(complete_bible);
+        document.getElementById("output").innerHTML = complete_bible;
+	  }
+
+  </script>
+  </body>
+</html>
